@@ -1,10 +1,7 @@
 Database Filler
 ===========
----
 
 ####  Fill a multi-table MySQL database with junk data through the parsing of the MySQL schema file.
-
----
 
 ### Origin
 
@@ -17,7 +14,7 @@ I needed to test the population of a database with 14 complex tables. Tools such
 
 ### Requirements
 1. Script expects database schema to exist in MySQL (*mysql -u root -p < test.sql*).
-2. ** All table names and column names in the MySQL schema require back-ticks.**
+2. **All table names and column names in the MySQL schema require back-ticks**
 
 ### Other
 - Any foreign keys are disabled on data population.
