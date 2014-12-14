@@ -1,0 +1,62 @@
+
+CREATE DATABASE IF NOT EXISTS dbfilltest CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+
+
+USE dbfilltest;
+
+
+
+CREATE TABLE `test_datatypes` (
+
+	`id`						INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+
+	`sku`						CHAR(20) NOT NULL,
+	`EAN`						CHAR(13) DEFAULT NULL,
+
+	`quantity`					INT(10) UNSIGNED NOT NULL DEFAULT 0,
+
+	`price`						DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+	`val_float`					FLOAT(20, 2) NOT NULL DEFAULT 0.00,
+	`val_double`				DOUBLE(40, 4) NOT NULL DEFAULT 0.0000,
+
+	`flag`						TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+
+	`ccode`						CHAR(2) NOT NULL DEFAULT '',
+
+	`notes`						VARCHAR(255) NOT NULL DEFAULT '',
+	`tinytxt`					TINYTEXT NOT NULL,
+
+	`added_date`				DATE NOT NULL,
+	`added_dtime`				DATETIME NOT NULL,
+	`added_time`				TIME NOT NULL,
+	`ts`						TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+	KEY `flag` (`flag`),
+	PRIMARY KEY (`id`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE `logger` (
+
+	`id`						INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`message`					VARCHAR(255) NOT NULL,
+	`timestamp`				TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+	PRIMARY KEY (`id`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE `logger2` (
+
+	`id`						INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`message`					VARCHAR(255) NOT NULL,
+	`timestamp`				TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+	PRIMARY KEY (`id`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
