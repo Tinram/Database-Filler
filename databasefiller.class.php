@@ -66,11 +66,11 @@ class DatabaseFiller {
 		$aMessages = array();
 
 
-	public function __construct(array $aConfig) {
+	/**
+	* set-up configuration class variables, establish DB connection if no debug configuration option set
+	*/
 
-		/**
-		* set-up configuration class variables, establish DB connection if no debug configuration option set
-		*/
+	public function __construct(array $aConfig) {
 
 		if ( ! isset($aConfig['schema_file'])) {
 			die('No schema file specified in the configuration array.');
@@ -127,11 +127,11 @@ class DatabaseFiller {
 	} # end __construct()
 
 
-	public function __destruct() {
+	/**
+	* close DB connection if active
+	*/
 
-		/**
-		* close DB connection if active
-		*/
+	public function __destruct() {
 
 		if ($this->bActiveConnection) {
 			$this->oConnection->close();
@@ -140,13 +140,13 @@ class DatabaseFiller {
 	} # end __destruct()
 
 
-	private function parseSQLFile($sFileName) {
+	/**
+	* parse SQL file to extract table schema
+	*
+	* @param    string $sFileName, schema filename
+	*/
 
-		/**
-		* parse SQL file to extract table schema
-		*
-		* @param    string $sFileName, schema filename
-		*/
+	private function parseSQLFile($sFileName) {
 
 		$aTableHolder = array();
 		$aMatch = array();
@@ -186,13 +186,13 @@ class DatabaseFiller {
 	} # end parseSQLFile()
 
 
-	private function processSQLTable($sTable) {
+	/**
+	* process each table schema
+	*
+	* @param    string $sTable, table schema string
+	*/
 
-		/**
-		* process each table schema
-		*
-		* @param    string $sTable, table schema string
-		*/
+	private function processSQLTable($sTable) {
 
 		static $iCount = 1;
 
@@ -274,7 +274,7 @@ class DatabaseFiller {
 						$iLen = (int) $aRow['length'];
 					}
 					else {
-						$iLen = (int) $aRow['length'] - 1; # -1 to avoid overflow on INTs on fixed data
+						$iLen = (int) $aRow['length'] - 1; # -1 to avoid overflow of INTs on fixed data
 					}
 
 					$s = '';
@@ -373,7 +373,7 @@ class DatabaseFiller {
 
 			$this->oConnection->query('SET foreign_key_checks = 0');
 
-			if ($this->iNumRows > 1500) { # MySQL server's my.cnf file will need optimising for inserting more than ~1500 rows at once 
+			if ($this->iNumRows > 1500) { # MySQL server's my.cnf file will need optimising for inserting more than ~1500 rows in one go
 				$this->oConnection->query('SET max_allowed_packet = 128M');
 			}
 
@@ -391,14 +391,14 @@ class DatabaseFiller {
 	} # end processSQLTable()
 
 
-	private function findField($sLine) {
+	/**
+	* extract field data from schema line
+	*
+	* @param    string $sTable, table schema string
+	* @return   array ( 'fieldName' => $v, 'type' => $v, 'length' => $v )
+	*/
 
-		/**
-		* extract field data from schema line
-		*
-		* @param    string $sTable, table schema string
-		* @return   array ( 'fieldName' => $v, 'type' => $v, 'length' => $v )
-		*/
+	private function findField($sLine) {
 
 		static $aTypes = array(
 
@@ -462,13 +462,13 @@ class DatabaseFiller {
 	} # end findField()
 
 
-	public function displayMessages() {
+	/**
+	* getter for class array of messages
+	*
+	* @return   string
+	*/
 
-		/**
-		* getter for class array of messages
-		*
-		* @return   string
-		*/
+	public function displayMessages() {
 
 		return join('<br>', $this->aMessages);
 
