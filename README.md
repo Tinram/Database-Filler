@@ -8,7 +8,7 @@ Database Filler
 I needed to test the population of a database with 14 complex tables. Tools such as Spawner are good on small tables - but specifying the datatypes on so many fields before initiating Spawner was too time-consuming.  Instead, why not parse the SQL schema?
 
 ### Purposes
-1. Aid the construction and testing of large database schema.
+1. Assist in the testing, editing, and data population of complex database schema, before moving the database to a production environment.
 2. Test database connection encoding and character encoding, and data insert speeds on different character encodings.
 3. Check table field population with specified datatype, data truncation, visual cues etc.
 
