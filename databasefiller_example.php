@@ -22,8 +22,8 @@ $aConfiguration = array(
 	'debug' => FALSE, # TRUE for verbose screen output and no DB insertion, FALSE for DB insertion
 
 	# number of rows to insert
-	# approximately 1500 is the limit on an unoptimised MySQL server, before 'MySQL server has gone away' error and max_allowed_packet settings etc enter the situation
 	'num_rows' => 10,
+		// on Windows, with unoptimised my.ini settings, data throughput may present a 'MySQL server has gone away' error at approximately 1500 rows
 
 	# database details
 	'database' => 'dbfilltest',

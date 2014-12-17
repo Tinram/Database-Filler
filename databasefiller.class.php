@@ -373,7 +373,7 @@ class DatabaseFiller {
 
 			$this->oConnection->query('SET foreign_key_checks = 0');
 
-			if ($this->iNumRows > 1500) { # MySQL server's my.cnf file will need optimising for inserting more than ~1500 rows in one go
+			if ($this->iNumRows > 1500) { # on Windows: XAMPP / WAMP - MySQL's my.ini file will need optimising for inserting more than ~1500 rows in one go
 				$this->oConnection->query('SET max_allowed_packet = 128M');
 			}
 
