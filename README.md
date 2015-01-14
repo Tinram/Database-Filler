@@ -17,7 +17,7 @@ Instead, why not parse the SQL schema?
 ## Requirements
 1. Script expects database schema to exist in MySQL (*mysql -u root -p < test.sql*).
 2. **All table names** and **column names** in the MySQL schema **require back-ticks.**
-3. **Unique keys must be removed** from tables when using the **configuration option *'random_data' => FALSE* **
+3. **Unique keys must be removed** from tables when using the option **'random_data' => FALSE**
 
 ## Other
 - Any foreign keys are disabled on data population.
