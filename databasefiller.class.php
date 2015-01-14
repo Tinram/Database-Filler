@@ -19,16 +19,17 @@ class DatabaseFiller {
 	* requirements:
 	*                  1) Script expects database schema to exist in MySQL (mysql -u root -p < test.sql).
 	*                  2) ** All table names and column names in the MySQL schema require back-ticks. **
+	*                  3) Unique keys must be removed from tables when using the configuration option 'random_data' => FALSE
 	*
 	* other:
 	*                  Any foreign keys are disabled on data population.
-	*                  Some comments may need stripping from schema for correct column name parsing.
-	*                  Random character generation is slow in PHP, and further depends on field length and the number of rows being generated.
+	*                  Random character generation is slow in PHP, and further depends on field length, number of fields, and the number of rows being generated.
+	*                  Coded to support PHP 5.3
 	*                  Class could be altered to parse SHOW CREATE TABLE from MySQL directly.
 	*
 	* @author          Martin Latter <copysense.co.uk>
 	* @copyright       Martin Latter 13/12/2014
-	* @version         0.30
+	* @version         0.40
 	* @license         GNU GPL v3.0
 	* @link            https://github.com/Tinram/Database-Filler.git
 	*
@@ -62,6 +63,8 @@ class DatabaseFiller {
 
 		$oConnection = FALSE,
 		$bActiveConnection = FALSE,
+
+		$sPrimaryKey = '',
 
 		$aMessages = array();
 
@@ -175,6 +178,13 @@ class DatabaseFiller {
 
 			$iOffset = $iEnd;
 
+			# strip comments
+			$sTable = preg_replace('!/\*.*?\*/!s', '', $sTable); # credit: chaos, stackoverflow
+			$sTable = preg_replace('/[\s]*(--|#).*(\n|\r\n)/', "\n", $sTable);
+
+			# replace EOL and any surrounding spaces for split
+			$sTable = preg_replace('/[\s]*,[\s]*(\n|\r\n)/', '*', $sTable);
+
 			$aTableHolder[] = $sTable;
 		}
 
@@ -203,7 +213,14 @@ class DatabaseFiller {
 		$aFields = array();
 		$aValues = array();
 
-		$aLines = explode(',', $sTable);
+		# parse primary key name
+		$iPKStart = stripos($sTable, 'PRIMARY KEY');
+		$iPKEnd = stripos($sTable, ')', $iPKStart);
+		$sPKCont = substr($sTable, $iPKStart, $iPKEnd);
+		preg_match('/`([a-zA-Z0-9\-_]+)`/', $sPKCont, $aRXResults);
+		$this->sPrimaryKey = $aRXResults[1]; # class var rather than passing a function parameter for each line
+
+		$aLines = explode('*', $sTable);
 
 		# get table name
 		preg_match('/`([a-zA-Z0-9\-_]+)`/', $aLines[0], $aRXResults);
@@ -266,27 +283,86 @@ class DatabaseFiller {
 
 					$aTemp[] = '"' . addslashes($s) . '"';
 				}
-				else if ($aRow['type'] === 'int') {
-				
-					# will need further adjustment for some values of smallint, mediumint
+				else if (substr($aRow['type'], 0, 3) === 'int') {
+
+					$MAXINT = mt_getrandmax(); # limited by PHP
+
+					switch ($aRow['type']) {
+
+						case 'int_32' :
+
+							if ($aRow['unsigned']) {
+								$iMin = 0;
+								$iMax = $MAXINT;
+							}
+							else {
+								# skew to get predominantly negative values
+								$iMin = -9999999;
+								$iMax = 1000000;
+							}
+
+						break;
+
+						case 'int_24' :
+
+							if ($aRow['unsigned']) {
+								$iMin = 0;
+								$iMax = 16777215;
+							}
+							else {
+								$iMin = -8388608;
+								$iMax = 8388607;
+							}
+
+						break;
+
+						case 'int_16' :
+							if ($aRow['unsigned']) {
+								$iMin = 0;
+								$iMax = 65535;
+							}
+							else {
+								$iMin = -32768;
+								$iMax = 32767;
+							}
+
+						break;
+
+						case 'int_8' :
+
+							if ($aRow['unsigned']) {
+								$iMin = 0;
+								$iMax = 255;
+							}
+							else {
+								$iMin = -128;
+								$iMax = 127;
+							}
+
+						break;
+
+						case 'int_64' :
+
+							# int_64 dealt with separately for 32-bit limits
+							$iMin = 0;
+							$iMax = 18446744073708551616; # reduced slightly to avoid 'out of range' error for 'random_data' => FALSE
+
+						break;
+					}
 
 					if ($this->bRandomData) {
-						$iLen = (int) $aRow['length'];
-					}
-					else {
-						$iLen = (int) $aRow['length'] - 1; # -1 to avoid overflow of INTs on fixed data
-					}
 
-					$s = '';
-
-					for ($j = 0; $j < $iLen; $j++) {
-						$s .= 9;
-					}
-
-					$iMax = (int) $s;
-
-					if ($this->bRandomData) {
-						$iNum = mt_rand(0, $iMax);
+						if ($aRow['type'] !== 'int_64') {
+							$iNum = mt_rand($iMin, $iMax);
+						}
+						else {
+							# BIGINT string kludge for 32-bit systems
+							$s = '';
+							for ($j = 0; $j < 19; $j++) { # 1 char less than max to avoid overflow
+								$s .= mt_rand(0, 9);
+							}
+							$iNum = $s;
+						}
 					}
 					else {
 						$iNum = $iMax;
@@ -294,7 +370,7 @@ class DatabaseFiller {
 
 					$aTemp[] = $iNum;
 				}
-				else if ($aRow['type'] === 'decimal' || $aRow['type'] === 'float') {
+				else if ($aRow['type'] === 'decimal' || substr($aRow['type'], 0, 5) === 'float') {
 
 					# compromise dealing with decimals and floats
 
@@ -327,21 +403,28 @@ class DatabaseFiller {
 					if ($aRow['type'] === 'decimal') {
 						$aTemp[] = '"' . $iNum . '.' . $iUnits . '"';
 					}
-					else if ($aRow['type'] === 'float') {
+					else if ($aRow['type'] === 'float_single') {
+						$aTemp[] = lcg_value() * 1000000; # for 32-bit float behaviour
+					}
+					else if ($aRow['type'] === 'float_double') {
 						$aTemp[] = lcg_value() * $iMax;
 					}
 				}
 				else if ($aRow['type'] === 'date') {
 
-					$aTemp[] = '"' . date('Y-m-d') . '"'; 
+					$aTemp[] = '"' . date('Y-m-d') . '"';
 				}
 				else if ($aRow['type'] === 'datetime') {
 
-					$aTemp[] = '"' . date('Y-m-d H:i:s') . '"'; 
+					$aTemp[] = '"' . date('Y-m-d H:i:s') . '"';
 				}
 				else if ($aRow['type'] === 'time') {
 
-					$aTemp[] = '"' . date('H:i:s') . '"'; 
+					$aTemp[] = '"' . date('H:i:s') . '"';
+				}
+				else if ($aRow['type'] === 'enumerate') {
+
+					$aTemp[] = '"' . $aRow['enumfields'][array_rand($aRow['enumfields'])] . '"';
 				}
 			}
 
@@ -378,11 +461,22 @@ class DatabaseFiller {
 			}
 
 			$fT1 = microtime(TRUE);
-			$this->oConnection->query($sInsert);
+			$rResult = $this->oConnection->query($sInsert);
 			$fT2 = microtime(TRUE);
 
-			$this->aMessages[] = 'attempted to add ' . $this->iNumRows . ' rows of random data to table <b>' . $sTableName . '</b>'; 
-			$this->aMessages[] = 'SQL insertion: ' . sprintf('%01.6f sec', $fT2 - $fT1);
+			if ($rResult) {
+				$this->aMessages[] = 'added ' . $this->iNumRows . ' rows of ' . ($this->bRandomData ? 'random' : 'fixed') . ' data to table <b>' . $sTableName . '</b>';
+			}
+			else {
+
+				$this->aMessages[] = 'there were <b>ERRORS</b> attempting to add ' . $this->iNumRows . ' rows of ' . ($this->bRandomData ? 'random' : 'fixed') . ' data to table <b>' . $sTableName . '</b>';
+				$rResult = $this->oConnection->query('SHOW WARNINGS');
+				$aErrors = $rResult->fetch_row();
+				$rResult->close();
+				$this->aMessages[] = join(' | ', $aErrors);
+			}
+
+			$this->aMessages[] = 'SQL insertion: ' . sprintf('%01.6f sec', $fT2 - $fT1) . '<br>';
 		}
 		##
 
@@ -402,15 +496,15 @@ class DatabaseFiller {
 
 		static $aTypes = array(
 
-			'INT' => 'int',
-			'TINYINT' => 'int',
-			'SMALLINT' => 'int',
-			'MEDIUMINT' => 'int',
-			'BIGINT' => 'int',
+			'BIGINT' => 'int_64',
+			'TINYINT' => 'int_8',
+			'SMALLINT' => 'int_16',
+			'MEDIUMINT' => 'int_24',
+			'INT' => 'int_32', # catch other ints before int_32
 
 			'DECIMAL' => 'decimal',
-			'FLOAT' => 'float',
-			'DOUBLE' => 'float',
+			'FLOAT' => 'float_single',
+			'DOUBLE' => 'float_double',
 
 			'CHAR' => 'string',
 			'VARCHAR' => 'string',
@@ -419,6 +513,8 @@ class DatabaseFiller {
 			'TINYTEXT' => 'string',
 			'MEDIUMTEXT' => 'string',
 			'LONGTEXT' => 'string',
+
+			'ENUM' => 'enumerate',
 
 			'DATETIME' => 'datetime',
 			'DATE' => 'date',
@@ -440,11 +536,20 @@ class DatabaseFiller {
 			if ($iPos !== FALSE) {
 
 				$sSub = substr($sLine, $iPos);
+
 				preg_match('/([0-9]+)/', $sSub, $aRXResults);
 				$aOut['type'] = $v;
 
 				if ($aOut['type'] !== 'datetime' && $aOut['type'] !== 'date') {
 					$aOut['length'] = @$aRXResults[1]; # block for comments in SQL schema
+				}
+
+				# ENUMeration
+				if ($aOut['type'] === 'enumerate') {
+
+					$sEnumParams = substr($sLine, stripos($sLine, '('), stripos($sLine, ')'));
+					$sEnumParams = str_ireplace(array('\'', '"', '(', ')', ' '), '', $sEnumParams);
+					$aOut['enumfields'] = explode(',', $sEnumParams);
 				}
 
 				break;
@@ -453,7 +558,9 @@ class DatabaseFiller {
 
 		preg_match('/`([a-zA-Z0-9\-_]+)`/', $sLine, $aRXResults);
 
-		if ( ! empty($aRXResults[1]) && $aRXResults[1] !== 'id') {
+		$aOut['unsigned'] = (stripos($sLine, 'unsigned') !== FALSE) ? TRUE : FALSE;
+
+		if ( ! empty($aRXResults[1]) && $aRXResults[1] !== $this->sPrimaryKey) {
 
 			$aOut['fieldName'] = $aRXResults[1];
 			return $aOut;
