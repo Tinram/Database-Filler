@@ -71,6 +71,8 @@ class DatabaseFiller {
 
 	/**
 	* set-up configuration class variables, establish DB connection if no debug configuration option set
+	*
+	* @param    array $aConfig, configuration details
 	*/
 
 	public function __construct(array $aConfig) {
@@ -488,7 +490,7 @@ class DatabaseFiller {
 	/**
 	* extract field data from schema line
 	*
-	* @param    string $sTable, table schema string
+	* @param    string $sLine, line
 	* @return   array ( 'fieldName' => $v, 'type' => $v, 'length' => $v )
 	*/
 
