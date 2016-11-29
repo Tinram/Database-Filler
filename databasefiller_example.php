@@ -1,9 +1,14 @@
 <?php
 
 /**
-* example to set-up and call DatabaseFiller class
-* Martin Latter, 14/12/14
+	* Example to set-up and call databasefiller.class.php
+	* Martin Latter, 14/12/14
 */
+
+
+date_default_timezone_set('Europe/London');
+
+ini_set('memory_limit', '256M'); # for inserting a large number of rows ($aConfiguration['num_rows'])
 
 
 require('databasefiller.class.php');
@@ -13,7 +18,7 @@ header('Content-Type: text/html; charset=utf-8');
 
 
 /**
-* configuration settings to pass to class
+	* Configuration settings to pass to class.
 */
 
 $aConfiguration = array(
@@ -23,18 +28,18 @@ $aConfiguration = array(
 
 	# number of rows to insert
 	'num_rows' => 10,
-		// on Windows, with unoptimised my.ini settings, data throughput may present a 'MySQL server has gone away' error at approximately 1500 rows
+		// optimise mysqld variables in my.cnf/my.ini files when inserting a large number (i.e. 50000) of rows
 
 	# database details
 	'database' => 'dbfilltest',
-	'username' => 'un',
-	'password' => 'pw',
+	'username' => 'USERNAME',
+	'password' => 'PASSWORD',
 
 	# schema file
 	'schema_file' => 'test.sql',
 
 	# database connection encoding
-	'encoding' => 'utf8',  # latin1 / utf8 etc
+	'encoding' => 'utf8', # latin1 / utf8 etc
 
 	# random data toggle - set to false for a much faster fixed character fill - but - no unique indexes permitted
 	'random_data' => TRUE,

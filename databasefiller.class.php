@@ -3,36 +3,36 @@
 class DatabaseFiller {
 
 	/**
-	*
-	* Fill a multi-table MySQL database with junk data through the parsing of the MySQL schema file.
-	*
-	*
-	* origin:
-	*                  I needed to test the population of a database with 14 complex tables. Tools such as Spawner are good on small tables -
-	*                  - but specifying the datatypes on so many fields before using Spawner was too time-consuming.  Instead, why not parse the SQL schema?
-	*
-	* purposes:
-	*                  1) Assist in the testing, editing, and data population of complex database schema, before moving the database to a production environment.
-	*                  2) Test database connection encoding and character encoding, and data insert speeds on different character encodings.
-	*                  3) Check table field population with specified datatype, data truncation, visual cues etc.
-	*
-	* requirements:
-	*                  1) Script expects database schema to exist in MySQL (mysql -u root -p < test.sql).
-	*                  2) ** All table names and column names in the MySQL schema require back-ticks. **
-	*                  3) Unique keys must be removed from tables when using the configuration option 'random_data' => FALSE
-	*
-	* other:
-	*                  Any foreign keys are disabled on data population.
-	*                  Random character generation is slow in PHP, and further depends on field length, number of fields, and the number of rows being generated.
-	*                  Coded to support PHP 5.3
-	*                  Class could be altered to parse SHOW CREATE TABLE from MySQL directly.
-	*
-	* @author          Martin Latter <copysense.co.uk>
-	* @copyright       Martin Latter 13/12/2014
-	* @version         0.40
-	* @license         GNU GPL v3.0
-	* @link            https://github.com/Tinram/Database-Filler.git
-	*
+		*
+		* Fill a multi-table MySQL database with junk data through the parsing of the MySQL schema file.
+		*
+		*
+		* Origin:
+		*                  I needed to test the population of a database with 14 complex tables. Tools such as Spawner are good on small tables -
+		*                  - but specifying the datatypes on so many fields before using Spawner was too time-consuming. Instead, why not parse the SQL schema?
+		*
+		* Purposes:
+		*                  1) Assist in the testing, editing, and data population of complex database schema, before moving the database to a production environment.
+		*                  2) Test database connection encoding and character encoding, and data insert speeds on different character encodings.
+		*                  3) Check table field population with specified datatype, data truncation, visual cues etc.
+		*
+		* Requirements:
+		*                  1) Script expects database schema to exist in MySQL (mysql -u root -p < test.sql).
+		*                  2) ** All table names and column names in the MySQL schema require back-ticks. **
+		*                  3) Unique keys must be removed from tables when using the configuration option 'random_data' => FALSE
+		*
+		* Other:
+		*                  Any foreign keys are disabled on data population.
+		*                  Random character generation is slow in PHP, and further depends on field length, number of fields, and the number of rows being generated.
+		*                  Coded to support PHP 5.3
+		*                  Class could be altered to parse SHOW CREATE TABLE from MySQL directly.
+		*
+		* @author          Martin Latter <copysense.co.uk>
+		* @copyright       Martin Latter 13/12/2014
+		* @version         0.41
+		* @license         GNU GPL v3.0
+		* @link            https://github.com/Tinram/Database-Filler.git
+		*
 	*/
 
 
@@ -70,9 +70,9 @@ class DatabaseFiller {
 
 
 	/**
-	* set-up configuration class variables, establish DB connection if no debug configuration option set
-	*
-	* @param    array $aConfig, configuration details
+		* Set-up configuration class variables, establish DB connection if no debug configuration option set.
+		*
+		* @param    array $aConfig, configuration details
 	*/
 
 	public function __construct(array $aConfig) {
@@ -133,7 +133,7 @@ class DatabaseFiller {
 
 
 	/**
-	* close DB connection if active
+		* Close DB connection if active.
 	*/
 
 	public function __destruct() {
@@ -146,9 +146,9 @@ class DatabaseFiller {
 
 
 	/**
-	* parse SQL file to extract table schema
-	*
-	* @param    string $sFileName, schema filename
+		* Parse SQL file to extract table schema.
+		*
+		* @param    string $sFileName, schema filename
 	*/
 
 	private function parseSQLFile($sFileName) {
@@ -199,9 +199,9 @@ class DatabaseFiller {
 
 
 	/**
-	* process each table schema
-	*
-	* @param    string $sTable, table schema string
+		* Process each table schema.
+		*
+		* @param    string $sTable, table schema string
 	*/
 
 	private function processSQLTable($sTable) {
@@ -319,6 +319,7 @@ class DatabaseFiller {
 						break;
 
 						case 'int_16' :
+
 							if ($aRow['unsigned']) {
 								$iMin = 0;
 								$iMax = 65535;
@@ -458,8 +459,12 @@ class DatabaseFiller {
 
 			$this->oConnection->query('SET foreign_key_checks = 0');
 
-			if ($this->iNumRows > 1500) { # on Windows: XAMPP / WAMP - MySQL's my.ini file will need optimising for inserting more than ~1500 rows in one go
-				$this->oConnection->query('SET max_allowed_packet = 128M');
+			if ($this->iNumRows > 1500) {
+
+				$this->oConnection->query('SET GLOBAL max_allowed_packet = 268435456');
+				$this->oConnection->query('SET GLOBAL innodb_buffer_pool_size = 256M');
+				$this->oConnection->query('SET GLOBAL innodb_flush_log_at_trx_commit = 2');
+				$this->oConnection->query('SET GLOBAL innodb_flush_method = O_DIRECT');
 			}
 
 			$fT1 = microtime(TRUE);
@@ -488,10 +493,10 @@ class DatabaseFiller {
 
 
 	/**
-	* extract field data from schema line
-	*
-	* @param    string $sLine, line
-	* @return   array ( 'fieldName' => $v, 'type' => $v, 'length' => $v )
+		* Extract field data from schema line.
+		*
+		* @param    string $sLine, line
+		* @return   array ( 'fieldName' => $v, 'type' => $v, 'length' => $v )
 	*/
 
 	private function findField($sLine) {
@@ -572,9 +577,9 @@ class DatabaseFiller {
 
 
 	/**
-	* getter for class array of messages
-	*
-	* @return   string
+		* Getter for class array of messages.
+		*
+		* @return   string
 	*/
 
 	public function displayMessages() {
