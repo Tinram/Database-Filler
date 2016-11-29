@@ -461,10 +461,10 @@ class DatabaseFiller {
 
 			if ($this->iNumRows > 1500) {
 
-				$this->oConnection->query('SET GLOBAL max_allowed_packet = 268435456');
-				$this->oConnection->query('SET GLOBAL innodb_buffer_pool_size = 256M');
-				$this->oConnection->query('SET GLOBAL innodb_flush_log_at_trx_commit = 2');
-				$this->oConnection->query('SET GLOBAL innodb_flush_method = O_DIRECT');
+				$this->oConnection->query('SET SESSION max_allowed_packet = 268435456');
+				$this->oConnection->query('SET SESSION innodb_buffer_pool_size = 256M');
+				$this->oConnection->query('SET SESSION innodb_flush_log_at_trx_commit = 2');
+				$this->oConnection->query('SET SESSION innodb_flush_method = O_DIRECT');
 			}
 
 			$fT1 = microtime(TRUE);
