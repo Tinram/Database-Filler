@@ -7,7 +7,7 @@ USE dbfilltest;
 
 
 
-CREATE TABLE `test_datatypes` (
+CREATE TABLE IF NOT EXISTS `test_datatypes` (
 
   `td_id`               INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 
@@ -46,7 +46,7 @@ CREATE TABLE `test_datatypes` (
 
 
 
-CREATE TABLE `logger` (
+CREATE TABLE IF NOT EXISTS `logger` (
 
   `id`                  INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `message`             VARCHAR(255) NOT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE `logger` (
 
 
 
-CREATE TABLE `logger2` (
+CREATE TABLE IF NOT EXISTS `logger2` (
 
   `logger2_id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `counter`             SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0,
