@@ -65,6 +65,9 @@ class DatabaseFiller {
 		$bActiveConnection = FALSE,
 
 		$sPrimaryKey = '',
+		$sUsername = '',
+
+		$sLineBreak = '',
 
 		$aMessages = array();
 
@@ -119,6 +122,9 @@ class DatabaseFiller {
 
 				$this->oConnection->set_charset($this->sEncoding);
 				$this->bActiveConnection = TRUE;
+
+				$this->sUsername = $aConfig['username'];
+				$this->sLineBreak = (PHP_SAPI !== 'cli') ? '<br>' : "\n";
 			}
 			else {
 
@@ -450,7 +456,7 @@ class DatabaseFiller {
 		$sInsert .= 'VALUES ' . join(',', $aValues);
 
 		if ($this->bDebug) {
-			$this->aMessages[] = $sInsert . '<br>';
+			$this->aMessages[] = $sInsert . $this->sLineBreak;
 		}
 		##
 
@@ -459,12 +465,11 @@ class DatabaseFiller {
 
 			$this->oConnection->query('SET foreign_key_checks = 0');
 
-			if ($this->iNumRows > 1500) {
+			if ($this->sUsername === 'root' && $this->iNumRows > 1500) { # adjust value as necessary, 1500 was originally for Win XAMPP
 
-				$this->oConnection->query('SET SESSION max_allowed_packet = 268435456');
-				$this->oConnection->query('SET SESSION innodb_buffer_pool_size = 256M');
-				$this->oConnection->query('SET SESSION innodb_flush_log_at_trx_commit = 2');
-				$this->oConnection->query('SET SESSION innodb_flush_method = O_DIRECT');
+				# the following variable can be set when running as root / super (affecting all connections)
+				# other useful variables for inserts need to be directly edited in my.cnf / my.ini
+				$this->oConnection->query('SET GLOBAL max_allowed_packet = 268435456');
 			}
 
 			$fT1 = microtime(TRUE);
@@ -483,7 +488,7 @@ class DatabaseFiller {
 				$this->aMessages[] = join(' | ', $aErrors);
 			}
 
-			$this->aMessages[] = 'SQL insertion: ' . sprintf('%01.6f sec', $fT2 - $fT1) . '<br>';
+			$this->aMessages[] = 'SQL insertion: ' . sprintf('%01.6f sec', $fT2 - $fT1) . $this->sLineBreak;
 		}
 		##
 
@@ -584,7 +589,7 @@ class DatabaseFiller {
 
 	public function displayMessages() {
 
-		return join('<br>', $this->aMessages);
+		return join($this->sLineBreak, $this->aMessages);
 
 	} # end displayMessages()
 

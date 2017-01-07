@@ -37,7 +37,7 @@ Instead, why not parse the SQL schema?
 
 `http://localhost/Database-Filler/databasefiller_example.php`
 
-(Or execute on the command-line with: `php -f databasefiller_example.php` (remove HTML tags from  *databasefiller.class.php*) )
+(Or execute on the command-line with: `php -f databasefiller_example.php`)
 
 
 ## License
