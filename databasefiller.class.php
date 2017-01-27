@@ -29,7 +29,7 @@ class DatabaseFiller {
 		*
 		* @author          Martin Latter <copysense.co.uk>
 		* @copyright       Martin Latter 13/12/2014
-		* @version         0.42
+		* @version         0.43
 		* @license         GNU GPL v3.0
 		* @link            https://github.com/Tinram/Database-Filler.git
 		*
@@ -83,6 +83,7 @@ class DatabaseFiller {
 		$this->sLineBreak = (PHP_SAPI !== 'cli') ? '<br>' : "\n";
 
 		if ( ! isset($aConfig['schema_file'])) {
+
 			$this->aMessages[] = 'No schema file specified in the configuration array.';
 			return;
 		}
@@ -110,6 +111,7 @@ class DatabaseFiller {
 		if ( ! $this->bDebug) {
 
 			if ( ! isset($aConfig['database']) || ! isset($aConfig['username']) || ! isset($aConfig['password'])) {
+
 				$this->aMessages[] = 'Database connection details have not been fully specified in the configuration array.';
 				return;
 			}
@@ -163,6 +165,11 @@ class DatabaseFiller {
 		$aTableHolder = [];
 		$aMatch = [];
 
+		if ( ! file_exists($sFileName)) {
+			$this->aMessages[] = 'The schema file \'' . htmlentities(strip_tags($sFileName)) . '\' does not exist in this directory.';
+			return;
+		}
+
 		# parse SQL schema
 		$sFile = file_get_contents($sFileName);
 
@@ -187,12 +194,15 @@ class DatabaseFiller {
 
 			$iOffset = $iEnd;
 
-			# strip comments
+			# remove COMMENT 'text', including most common symbols; preserve schema items after COMMENT
+			$sTable = preg_replace('/comment [\'|"][\w\s,;:`<>=£&%@~#\\\.\/\{\}\[\]\^\$\(\)\|\!\*\?\-\+]*[\'|"]/i', '', $sTable);
+
+			# strip SQL comments
 			$sTable = preg_replace('!/\*.*?\*/!s', '', $sTable); # credit: chaos, stackoverflow
-			$sTable = preg_replace('/[\s]*(--|#).*(\n|\r\n)/', "\n", $sTable);
+			$sTable = preg_replace('/[\s]*(--|#).*[\n|\r\n]/', "\n", $sTable);
 
 			# replace EOL and any surrounding spaces for split
-			$sTable = preg_replace('/[\s]*,[\s]*(\n|\r\n)/', '*', $sTable);
+			$sTable = preg_replace('/[\s]*,[\s]*[\n|\r\n]/', '*', $sTable);
 
 			$aTableHolder[] = $sTable;
 		}
@@ -226,13 +236,13 @@ class DatabaseFiller {
 		$iPKStart = stripos($sTable, 'PRIMARY KEY');
 		$iPKEnd = strpos($sTable, ')', $iPKStart);
 		$sPKCont = substr($sTable, $iPKStart, $iPKEnd);
-		preg_match('/`([a-zA-Z0-9\-_]+)`/', $sPKCont, $aRXResults);
+		preg_match('/`([\w\-]+)`/', $sPKCont, $aRXResults);
 		$this->sPrimaryKey = $aRXResults[1]; # class var rather than passing a function parameter for each line
 
 		$aLines = explode('*', $sTable);
 
 		# get table name
-		preg_match('/`([a-zA-Z0-9\-_]+)`/', $aLines[0], $aRXResults);
+		preg_match('/`([\w\-]+)`/', $aLines[0], $aRXResults);
 		$sTableName = $aRXResults[1];
 
 		# extract field attributes
@@ -570,7 +580,7 @@ class DatabaseFiller {
 			}
 		}
 
-		preg_match('/`([a-zA-Z0-9\-_]+)`/', $sLine, $aRXResults);
+		preg_match('/`([\w\-]+)`/', $sLine, $aRXResults);
 
 		$aOut['unsigned'] = (stripos($sLine, 'unsigned') !== FALSE) ? TRUE : FALSE;
 
@@ -591,7 +601,7 @@ class DatabaseFiller {
 
 	public function displayMessages() {
 
-		return join($this->sLineBreak, $this->aMessages) . $this->sLineBreak;
+		return $this->sLineBreak . join($this->sLineBreak, $this->aMessages) . $this->sLineBreak;
 
 	} # end displayMessages()
 

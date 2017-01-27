@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `test_datatypes` (
 
   `price`               DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
   `val_float`           FLOAT(20, 2) NOT NULL DEFAULT 0.00,
-  `val_double`          DOUBLE(40, 4) NOT NULL DEFAULT 0.0000,
+  `val_double`          DOUBLE(40, 4) NOT NULL DEFAULT 0.0000 COMMENT 'normal schema comment',
 
   `enumerator`          ENUM('choice1', 'choice2', 'choice3', 'choice4'),
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `test_datatypes` (
   `code`                CHAR(2) NOT NULL DEFAULT ''              ,   -- deliberate whitespace
 
   `notes`               VARCHAR(255) NOT NULL DEFAULT '',
-  `tinytxt`             TINYTEXT NOT NULL,
+  `tinytxt`             TINYTEXT COMMENT "badly placed schema comment" NOT NULL,
 
   `added_date`          DATE NOT NULL,
   `added_dtime`         DATETIME NOT NULL,
