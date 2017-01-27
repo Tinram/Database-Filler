@@ -21,14 +21,14 @@ header('Content-Type: text/html; charset=utf-8');
 	* Configuration settings to pass to class.
 */
 
-$aConfiguration = array(
+$aConfiguration = [
 
 	# output type toggle
-	'debug' => FALSE, # TRUE for verbose screen output and no DB insertion, FALSE for DB insertion
+	'debug' => FALSE, # TRUE for verbose screen output and no database insertion, FALSE for database insertion
 
 	# number of rows to insert
 	'num_rows' => 10,
-		// optimise mysqld variables in my.cnf/my.ini files when inserting a large number (i.e. 50000) of rows
+		// optimise mysqld variables in my.cnf/my.ini files when inserting a large number of rows (e.g. 50000)
 
 	# database details
 	'database' => 'dbfilltest',
@@ -46,8 +46,9 @@ $aConfiguration = array(
 
 	# random character range: ASCII integer values
 	'low_char' => 33,
-	'high_char' => 127
-);
+	'high_char' => 126
+
+];
 
 
 

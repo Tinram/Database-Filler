@@ -17,19 +17,19 @@ class DatabaseFiller {
 		*                  3) Check table field population with specified datatype, data truncation, visual cues etc.
 		*
 		* Requirements:
-		*                  1) Script expects database schema to exist in MySQL (mysql -u root -p < test.sql).
+		*                  1) Script expects database schema to exist in MySQL (mysql -u root -p < test.sql)
 		*                  2) ** All table names and column names in the MySQL schema require back-ticks. **
 		*                  3) Unique keys must be removed from tables when using the configuration option 'random_data' => FALSE
 		*
 		* Other:
 		*                  Any foreign keys are disabled on data population.
 		*                  Random character generation is slow in PHP, and further depends on field length, number of fields, and the number of rows being generated.
-		*                  Coded to support PHP 5.3
+		*                  Coded to support PHP 5.4+
 		*                  Class could be altered to parse SHOW CREATE TABLE from MySQL directly.
 		*
 		* @author          Martin Latter <copysense.co.uk>
 		* @copyright       Martin Latter 13/12/2014
-		* @version         0.41
+		* @version         0.42
 		* @license         GNU GPL v3.0
 		* @link            https://github.com/Tinram/Database-Filler.git
 		*
@@ -54,7 +54,7 @@ class DatabaseFiller {
 
 		# random character range
 		$iLowChar = 33,
-		$iHighChar = 127,
+		$iHighChar = 126,
 
 		# random data generator toggle
 		$bRandomData = TRUE, # FALSE = a much faster fixed character fill (unsuitable with unique indexes, and SET unique_checks = 0 is not sufficient)
@@ -69,7 +69,7 @@ class DatabaseFiller {
 
 		$sLineBreak = '',
 
-		$aMessages = array();
+		$aMessages = [];
 
 
 	/**
@@ -80,8 +80,11 @@ class DatabaseFiller {
 
 	public function __construct(array $aConfig) {
 
+		$this->sLineBreak = (PHP_SAPI !== 'cli') ? '<br>' : "\n";
+
 		if ( ! isset($aConfig['schema_file'])) {
-			die('No schema file specified in the configuration array.');
+			$this->aMessages[] = 'No schema file specified in the configuration array.';
+			return;
 		}
 
 		if (isset($aConfig['debug'])) {
@@ -107,7 +110,6 @@ class DatabaseFiller {
 		if ( ! $this->bDebug) {
 
 			if ( ! isset($aConfig['database']) || ! isset($aConfig['username']) || ! isset($aConfig['password'])) {
-
 				$this->aMessages[] = 'Database connection details have not been fully specified in the configuration array.';
 				return;
 			}
@@ -124,7 +126,6 @@ class DatabaseFiller {
 				$this->bActiveConnection = TRUE;
 
 				$this->sUsername = $aConfig['username'];
-				$this->sLineBreak = (PHP_SAPI !== 'cli') ? '<br>' : "\n";
 			}
 			else {
 
@@ -159,8 +160,8 @@ class DatabaseFiller {
 
 	private function parseSQLFile($sFileName) {
 
-		$aTableHolder = array();
-		$aMatch = array();
+		$aTableHolder = [];
+		$aMatch = [];
 
 		# parse SQL schema
 		$sFile = file_get_contents($sFileName);
@@ -216,14 +217,14 @@ class DatabaseFiller {
 
 		$fD1 = microtime(TRUE);
 
-		$aDBFieldAttr = array();
-		$aRXResults = array();
-		$aFields = array();
-		$aValues = array();
+		$aDBFieldAttr = [];
+		$aRXResults = [];
+		$aFields = [];
+		$aValues = [];
 
 		# parse primary key name
 		$iPKStart = stripos($sTable, 'PRIMARY KEY');
-		$iPKEnd = stripos($sTable, ')', $iPKStart);
+		$iPKEnd = strpos($sTable, ')', $iPKStart);
 		$sPKCont = substr($sTable, $iPKStart, $iPKEnd);
 		preg_match('/`([a-zA-Z0-9\-_]+)`/', $sPKCont, $aRXResults);
 		$this->sPrimaryKey = $aRXResults[1]; # class var rather than passing a function parameter for each line
@@ -254,7 +255,7 @@ class DatabaseFiller {
 		# create SQL query value sets
 		for ($i = 0; $i < $this->iNumRows; $i++) {
 
-			$aTemp = array(); # reset
+			$aTemp = []; # reset
 
 			# generate random data for fields, dependent on datatype
 			foreach ($aDBFieldAttr as $aRow) {
@@ -506,7 +507,7 @@ class DatabaseFiller {
 
 	private function findField($sLine) {
 
-		static $aTypes = array(
+		static $aTypes = [
 
 			'BIGINT' => 'int_64',
 			'TINYINT' => 'int_8',
@@ -531,15 +532,16 @@ class DatabaseFiller {
 			'DATETIME' => 'datetime',
 			'DATE' => 'date',
 			'TIME' => 'time'
-		);
+
+		];
 
 
 		if (stripos($sLine, 'CREATE TABLE') !== FALSE || stripos($sLine, 'KEY') !== FALSE || stripos($sLine, 'TIMESTAMP') !== FALSE) {
 			return NULL;
 		}
 
-		$aOut = array('type' => '', 'length' => 0); # set defaults to address notices
-		$aRXResults = array();
+		$aOut = ['type' => '', 'length' => 0]; # set defaults to address notices
+		$aRXResults = [];
 
 		foreach ($aTypes as $sType => $v) {
 
@@ -559,8 +561,8 @@ class DatabaseFiller {
 				# ENUMeration
 				if ($aOut['type'] === 'enumerate') {
 
-					$sEnumParams = substr($sLine, stripos($sLine, '('), stripos($sLine, ')'));
-					$sEnumParams = str_ireplace(array('\'', '"', '(', ')', ' '), '', $sEnumParams);
+					$sEnumParams = substr($sLine, strpos($sLine, '('), strpos($sLine, ')'));
+					$sEnumParams = str_replace( ['\'', '"', '(', ')', ' '], '', $sEnumParams);
 					$aOut['enumfields'] = explode(',', $sEnumParams);
 				}
 
@@ -589,7 +591,7 @@ class DatabaseFiller {
 
 	public function displayMessages() {
 
-		return join($this->sLineBreak, $this->aMessages);
+		return join($this->sLineBreak, $this->aMessages) . $this->sLineBreak;
 
 	} # end displayMessages()
 
