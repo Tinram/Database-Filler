@@ -29,7 +29,7 @@ class DatabaseFiller {
 		*
 		* @author          Martin Latter <copysense.co.uk>
 		* @copyright       Martin Latter 13/12/2014
-		* @version         0.44
+		* @version         0.45
 		* @license         GNU GPL v3.0
 		* @link            https://github.com/Tinram/Database-Filler.git
 		*
@@ -571,8 +571,12 @@ class DatabaseFiller {
 				# ENUMeration
 				if ($aOut['type'] === 'enumerate') {
 
-					$sEnumParams = substr($sLine, strpos($sLine, '('), strpos($sLine, ')'));
+					$iStart = strpos($sLine, '(');
+					$iEnd = strpos($sLine, ')');
+
+					$sEnumParams = substr($sLine,  $iStart, ($iEnd + 1) - $iStart);
 					$sEnumParams = str_replace( ['\'', '"', '(', ')', ' '], '', $sEnumParams);
+
 					$aOut['enumfields'] = explode(',', $sEnumParams);
 				}
 
