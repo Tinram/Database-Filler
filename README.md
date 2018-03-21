@@ -12,11 +12,19 @@
 + Test database connection encoding and character encoding, and data insertion speeds.
 
 
+[1]: https://tinram.github.io/images/databasefiller-data.png
+![Database-Filler database][1]
+
+
 ## Background
 
-Originally, I needed to populate a database with 14 complex tables. Tools such as Spawner are useful for small tables, but in this case, specifying the datatypes for 300+ fields to initiate Spawner would have been insanity.
+Originally, I needed to populate a database containing 14 complex tables. Tools such as Spawner are useful populating small tables, but in this case, specifying the datatypes for 300+ fields to initiate Spawner would have been insanity.
 
 Instead, why not parse the SQL schema?
+
+
+[2]: https://tinram.github.io/images/databasefiller-execute.png
+![Database-Filler execute][2]
 
 
 ## Database Requirements
