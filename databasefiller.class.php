@@ -29,7 +29,7 @@ class DatabaseFiller {
 		*
 		* @author          Martin Latter <copysense.co.uk>
 		* @copyright       Martin Latter 13/12/2014
-		* @version         0.46
+		* @version         0.47
 		* @license         GNU GPL v3.0
 		* @link            https://github.com/Tinram/Database-Filler.git
 		*
@@ -49,7 +49,7 @@ class DatabaseFiller {
 		# schema file
 		$sSchemaFile = NULL,
 
-		# DB connection encoding
+		# database connection encoding
 		$sEncoding = 'utf8',
 
 		# random character range
@@ -58,6 +58,9 @@ class DatabaseFiller {
 
 		# random data generator toggle
 		$bRandomData = TRUE, # FALSE = a much faster fixed character fill (unsuitable with unique indexes, and SET unique_checks = 0 is not sufficient)
+
+		# CLI usage: rows of SQL generated before displaying progress percentage
+		$iCLIRowCounter = 1000,
 
 		##########################
 
@@ -106,6 +109,10 @@ class DatabaseFiller {
 
 		if (isset($aConfig['high_char'])) {
 			$this->iHighChar = (int) $aConfig['high_char'];
+		}
+
+		if (isset($aConfig['row_counter_threshold'])) {
+			$this->iCLIRowCounter = (int) $aConfig['row_counter_threshold'];
 		}
 
 		if ( ! $this->bDebug) {
@@ -261,6 +268,10 @@ class DatabaseFiller {
 			$aFields[] = '`' . $aRow['fieldName'] . '`';
 		}
 		##
+
+		if (PHP_SAPI === 'cli' && $this->iNumRows > $this->iCLIRowCounter) {
+			echo 'generating SQL for table \'' . $sTableName . '\' ...' . $this->sLineBreak;
+		}
 
 		# create SQL query value sets
 		for ($i = 0; $i < $this->iNumRows; $i++) {
@@ -449,11 +460,20 @@ class DatabaseFiller {
 			}
 
 			$aValues[] = '(' . join(',', $aTemp) . ')';
+
+			# SQL generation progress indicator for CLI
+			if (PHP_SAPI === 'cli') {
+				if ($this->iNumRows > $this->iCLIRowCounter) {
+					if ($i % $this->iCLIRowCounter === 0) {
+						printf("%02d%%" . $this->sLineBreak . "\x1b[A", ($i / $this->iNumRows) * 100);
+					}
+				}
+			}
 		}
 		##
 
 		$fD2 = microtime(TRUE);
-		$this->aMessages[] = __METHOD__ . '() iteration <b>' . $iCount . '</b> :: ' . sprintf('%01.6f sec', $fD2 - $fD1);
+		$this->aMessages[] = ((PHP_SAPI === 'cli') ? $this->sLineBreak : '') . __METHOD__ . '() iteration <b>' . $iCount . '</b> :: ' . sprintf('%01.6f sec', $fD2 - $fD1);
 
 		if ($this->bDebug) {
 

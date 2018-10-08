@@ -47,7 +47,10 @@ $aConfiguration = [
 
 	# random character range: ASCII integer values
 	'low_char' => 33,
-	'high_char' => 126
+	'high_char' => 126,
+
+	# CLI usage: rows of SQL generated before displaying progress percentage
+	'row_counter_threshold' => 1000
 
 ];
 
