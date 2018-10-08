@@ -6,7 +6,7 @@
 
 ## Purpose
 
-+ Quickly populate database tables with row data for testing SQL retrieval.
++ Quickly populate database tables with row data for testing SQL data retrieval.
 + Assist in testing complex database schema, before moving the database to a production environment.
 + Check table field population with specified datatypes, potential data truncation, visual cues etc.
 + Test database connection encoding and character encoding, and data insertion speeds.
@@ -18,7 +18,7 @@
 
 ## Background
 
-Originally, I needed to populate a database containing 14 complex tables. Tools such as Spawner are useful populating small tables, but in this case, specifying the datatypes for 300+ fields to initiate Spawner would have been insanity.
+Originally, I needed to populate a database containing 14 complex tables. Tools such as Spawner are useful for populating small tables, but in this case, specifying the datatypes for 300+ fields to initiate Spawner would have been insanity.
 
 Instead, why not parse the SQL schema?
 
@@ -39,18 +39,18 @@ Instead, why not parse the SQL schema?
 + The majority of MySQL datatypes are supported.
 + Any foreign keys are disabled on data population.
 + Random character generation is slow in PHP, and such slowness further depends on field length, number of fields, and the number of rows being generated.
-+ Multiple INSERTs are added in a single query, which is quite fast. Number of INSERTs per second will depend on MySQL configuration settings (default is not optimised), datatype / length inserted, operating system, hardware, etc.
++ Multiple INSERTs are added in a single query, which is quite fast. Number of INSERTs per second will depend on MySQL configuration settings (the defaults are not optimised), datatype / length inserted, system load, operating system, hardware etc.
 
 
 ## Set-up
 
-Adjust the array connection details and parameters in *databasefiller_example.php* file.
+Adjust the array connection details and parameters in the file *databasefiller_example.php*
 
-Then execute the file with PHP on the command-line:
+Then execute this file with PHP on the command-line:
 
         php databasefiller_example.php
 
-or run the file through a web server e.g.
+*or* run the file through a web server e.g.
 
         http://localhost/Database-Filler/databasefiller_example.php
 
