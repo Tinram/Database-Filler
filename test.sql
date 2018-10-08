@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `logger` (
 
   `id`                  INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `message`             VARCHAR(255) NOT NULL,
-  `timestamp`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `timestamp`           TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
   PRIMARY KEY (`id`)
 
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `logger2` (
   `logger2_id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `counter`             SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0,
   `message`             VARCHAR(255) NOT NULL,
-  `timestamp`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `timestamp`           TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
   PRIMARY KEY (`logger2_id`)
 
