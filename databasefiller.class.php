@@ -29,7 +29,7 @@ class DatabaseFiller {
 		*
 		* @author          Martin Latter <copysense.co.uk>
 		* @copyright       Martin Latter 13/12/2014
-		* @version         0.45
+		* @version         0.46
 		* @license         GNU GPL v3.0
 		* @link            https://github.com/Tinram/Database-Filler.git
 		*
@@ -546,7 +546,7 @@ class DatabaseFiller {
 		];
 
 
-		if (stripos($sLine, 'CREATE TABLE') !== FALSE || stripos($sLine, 'KEY') !== FALSE || stripos($sLine, 'TIMESTAMP') !== FALSE) {
+		if (stripos($sLine, 'CREATE TABLE') !== FALSE || stripos($sLine, 'KEY') !== FALSE || stripos($sLine, 'UNIQUE') !== FALSE || stripos($sLine, 'FULLTEXT') !== FALSE || stripos($sLine, 'SPATIAL') !== FALSE || stripos($sLine, 'TIMESTAMP') !== FALSE) {
 			return NULL;
 		}
 
