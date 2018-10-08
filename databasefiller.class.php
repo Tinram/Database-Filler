@@ -29,7 +29,7 @@ class DatabaseFiller {
 		*
 		* @author          Martin Latter <copysense.co.uk>
 		* @copyright       Martin Latter 13/12/2014
-		* @version         0.47
+		* @version         0.48
 		* @license         GNU GPL v3.0
 		* @link            https://github.com/Tinram/Database-Filler.git
 		*
@@ -473,7 +473,7 @@ class DatabaseFiller {
 		##
 
 		$fD2 = microtime(TRUE);
-		$this->aMessages[] = ((PHP_SAPI === 'cli') ? $this->sLineBreak : '') . __METHOD__ . '() iteration <b>' . $iCount . '</b> :: ' . sprintf('%01.6f sec', $fD2 - $fD1);
+		$this->aMessages[] = ((PHP_SAPI === 'cli') ? $this->sLineBreak : '') . __METHOD__ . '() iteration ' . $iCount . ' :: ' . sprintf('%01.6f sec', $fD2 - $fD1);
 
 		if ($this->bDebug) {
 
@@ -508,11 +508,11 @@ class DatabaseFiller {
 			$fT2 = microtime(TRUE);
 
 			if ($rResult) {
-				$this->aMessages[] = 'added ' . $this->iNumRows . ' rows of ' . ($this->bRandomData ? 'random' : 'fixed') . ' data to table <b>' . $sTableName . '</b>';
+				$this->aMessages[] = 'added ' . $this->iNumRows . ' rows of ' . ($this->bRandomData ? 'random' : 'fixed') . ' data to table \'' . $sTableName . '\'';
 			}
 			else {
 
-				$this->aMessages[] = 'there were <b>ERRORS</b> attempting to add ' . $this->iNumRows . ' rows of ' . ($this->bRandomData ? 'random' : 'fixed') . ' data to table <b>' . $sTableName . '</b>';
+				$this->aMessages[] = 'there were ERRORS attempting to add ' . $this->iNumRows . ' rows of ' . ($this->bRandomData ? 'random' : 'fixed') . ' data to table \'' . $sTableName . '\'';
 				$rResult = $this->oConnection->query('SHOW WARNINGS');
 				$aErrors = $rResult->fetch_row();
 				$rResult->close();
