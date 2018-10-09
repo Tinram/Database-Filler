@@ -3,17 +3,15 @@
 class DatabaseFiller {
 
 	/**
-		*
 		* Fill a multi-table MySQL database with junk data through the parsing of the MySQL schema file.
 		*
-		*
 		* Origin:
-		*                  I needed to test the population of a database with 14 complex tables. Tools such as Spawner are good on small tables -
-		*                  - but specifying the datatypes on so many fields before using Spawner was too time-consuming. Instead, why not parse the SQL schema?
+		*                  I needed to test the population of a database with 14 complex tables. Tools such as Spawner are good for small tables -
+		*                  - but too time-consuming for larger tables. Instead, why not parse the SQL schema?
 		*
 		* Purposes:
-		*                  1) Assist in the testing, editing, and data population of complex database schema, before moving the database to a production environment.
-		*                  2) Test database connection encoding and character encoding, and data insert speeds on different character encodings.
+		*                  1) Assist in the testing, editing, and data population of complex database schema.
+		*                  2) Test database connection encoding and character encoding, and data insertion speeds.
 		*                  3) Check table field population with specified datatype, data truncation, visual cues etc.
 		*
 		* Requirements:
@@ -23,16 +21,15 @@ class DatabaseFiller {
 		*
 		* Other:
 		*                  Any foreign keys are disabled on data population.
-		*                  Random character generation is slow in PHP, and further depends on field length, number of fields, and the number of rows being generated.
+		*                  Random character generation is slow in PHP.
 		*                  Coded to support PHP 5.4+
 		*                  Class could be altered to parse SHOW CREATE TABLE from MySQL directly.
 		*
 		* @author          Martin Latter <copysense.co.uk>
 		* @copyright       Martin Latter 13/12/2014
-		* @version         0.48
-		* @license         GNU GPL v3.0
+		* @version         0.49
+		* @license         GNU GPL version 3.0 (GPL v3); http://www.gnu.org/licenses/gpl.html
 		* @link            https://github.com/Tinram/Database-Filler.git
-		*
 	*/
 
 
@@ -62,21 +59,18 @@ class DatabaseFiller {
 		# CLI usage: rows of SQL generated before displaying progress percentage
 		$iCLIRowCounter = 1000,
 
-		##########################
+		###########################
 
 		$oConnection = FALSE,
 		$bActiveConnection = FALSE,
-
 		$sPrimaryKey = '',
 		$sUsername = '',
-
 		$sLineBreak = '',
-
 		$aMessages = [];
 
 
 	/**
-		* Set-up configuration class variables, establish DB connection if no debug configuration option set.
+		* Set-up configuration class variables, establish database connection if no debug configuration option set.
 		*
 		* @param    array $aConfig, configuration details
 	*/
