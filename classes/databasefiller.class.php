@@ -25,7 +25,7 @@ class DatabaseFiller {
 		*                  Coded to support PHP 5.4+
 		*                  Class could be altered to parse SHOW CREATE TABLE from MySQL directly.
 		*
-		* @author          Martin Latter <copysense.co.uk>
+		* @author          Martin Latter
 		* @copyright       Martin Latter 13/12/2014
 		* @version         0.49
 		* @license         GNU GPL version 3.0 (GPL v3); http://www.gnu.org/licenses/gpl.html
@@ -623,6 +623,6 @@ class DatabaseFiller {
 
 	} # end displayMessages()
 
-} # end {}
+}
 
 ?>

@@ -2,7 +2,7 @@
 
 /**
 	* Example to set-up and call databasefiller.class.php
-	* Martin Latter, 14/12/14
+	* Martin Latter, 14/12/2014
 */
 
 
@@ -18,7 +18,7 @@ header('Content-Type: text/html; charset=utf-8');
 
 
 /**
-	* Configuration settings to pass to class.
+	* Configuration settings to pass to databasefiller.class.php
 */
 
 $aConfiguration = [
@@ -51,9 +51,7 @@ $aConfiguration = [
 
 	# CLI usage: rows of SQL generated before displaying progress percentage
 	'row_counter_threshold' => 1000
-
 ];
-
 
 
 $oDF = new DatabaseFiller($aConfiguration);
