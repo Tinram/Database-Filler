@@ -11,7 +11,7 @@ date_default_timezone_set('Europe/London');
 ini_set('memory_limit', '256M'); # for inserting a large number of rows ($aConfiguration['num_rows'])
 
 
-require('databasefiller.class.php');
+require('classes/databasefiller.class.php');
 
 header('Content-Type: text/html; charset=utf-8');
 
