@@ -2,12 +2,11 @@
 CREATE DATABASE IF NOT EXISTS dbfilltest CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 
-
 USE dbfilltest;
 
 
-
-CREATE TABLE IF NOT EXISTS `test_datatypes` (
+CREATE TABLE IF NOT EXISTS `test_datatypes`
+(
 
   `td_id`               INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 
@@ -46,7 +45,8 @@ CREATE TABLE IF NOT EXISTS `test_datatypes` (
 
 
 
-CREATE TABLE IF NOT EXISTS `logger` (
+CREATE TABLE IF NOT EXISTS `logger`
+(
 
   `id`                  INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `message`             VARCHAR(255) NOT NULL,
@@ -58,7 +58,8 @@ CREATE TABLE IF NOT EXISTS `logger` (
 
 
 
-CREATE TABLE IF NOT EXISTS `logger2` (
+CREATE TABLE IF NOT EXISTS `logger2`
+(
 
   `logger2_id`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `counter`             SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0,
