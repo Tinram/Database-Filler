@@ -44,11 +44,20 @@ Instead, why not parse the SQL schema?
 
 ## Set-up
 
+Ensure the database already exists in MySQL  
+e.g. for the test schema:
+
+```bash
+    mysql -u root -p < test.sql
+```
+
 Adjust the array connection details and parameters in the file *databasefiller_example.php*
 
 Then execute this file with PHP on the command-line:
 
-        php databasefiller_example.php
+```bash
+    php databasefiller_example.php
+```
 
 *or* run the file through a web server e.g.
 
