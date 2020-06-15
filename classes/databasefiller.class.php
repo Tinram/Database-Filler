@@ -31,7 +31,7 @@ final class DatabaseFiller
         *
         * @author          Martin Latter
         * @copyright       Martin Latter 13/12/2014
-        * @version         0.52
+        * @version         0.53
         * @license         GNU GPL version 3.0 (GPL v3); http://www.gnu.org/licenses/gpl.html
         * @link            https://github.com/Tinram/Database-Filler.git
     */
@@ -445,7 +445,7 @@ final class DatabaseFiller
 
                     if ($aRow['type'] === 'decimal')
                     {
-                        $iLen = ((int) $aRow['length']) - 3;
+                        $iLen = ((int) $aRow['length']) - 4;
                     }
                     else
                     {
