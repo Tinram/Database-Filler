@@ -31,7 +31,7 @@ final class DatabaseFiller
         *
         * @author          Martin Latter
         * @copyright       Martin Latter 13/12/2014
-        * @version         0.50
+        * @version         0.51
         * @license         GNU GPL version 3.0 (GPL v3); http://www.gnu.org/licenses/gpl.html
         * @link            https://github.com/Tinram/Database-Filler.git
     */
@@ -561,7 +561,7 @@ final class DatabaseFiller
             }
             else
             {
-                $this->aMessages[] = 'there were ERRORS attempting to add ' . $this->iNumRows . ' rows of ' . ($this->bRandomData ? 'random' : 'fixed') . ' data to table \'' . $sTableName . '\'';
+                $this->aMessages[] = 'MySQL reports ERRORS attempting to add ' . $this->iNumRows . ' rows of ' . ($this->bRandomData ? 'random' : 'fixed') . ' data to table \'' . $sTableName . '\'';
                 $rResult = $this->oConnection->query('SHOW WARNINGS');
                 $aErrors = $rResult->fetch_row();
                 $rResult->close();
