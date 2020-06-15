@@ -31,7 +31,7 @@ final class DatabaseFiller
         *
         * @author          Martin Latter
         * @copyright       Martin Latter 13/12/2014
-        * @version         0.51
+        * @version         0.52
         * @license         GNU GPL version 3.0 (GPL v3); http://www.gnu.org/licenses/gpl.html
         * @link            https://github.com/Tinram/Database-Filler.git
     */
@@ -478,11 +478,11 @@ final class DatabaseFiller
                     }
                     else if ($aRow['type'] === 'float_single')
                     {
-                        $aTemp[] = lcg_value() * 1000000; # for 32-bit float behaviour
+                        $aTemp[] = lcg_value() * ($iMax * 0.01);
                     }
                     else if ($aRow['type'] === 'float_double')
                     {
-                        $aTemp[] = lcg_value() * $iMax;
+                        $aTemp[] = lcg_value() * ($iMax * 0.01);
                     }
                 }
                 else if ($aRow['type'] === 'date')
