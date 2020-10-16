@@ -9,8 +9,8 @@ final class DatabaseFiller
         * Fill a multi-table MySQL database with junk data by parsing the MySQL schema file.
         *
         * Origin:
-        *                  I needed to test the population of a database with 14 complex tables.
-        *                  Tools such as Spawner are good for small tables - but too time-consuming for larger tables.
+        *                  I needed to test the data population of a database with 14 complex tables.
+        *                  Tools such as Spawner are good for small tables – but too time-consuming for larger tables.
         *                  Instead, why not parse the SQL schema?
         *
         * Purpose:
@@ -31,7 +31,7 @@ final class DatabaseFiller
         *
         * @author          Martin Latter
         * @copyright       Martin Latter 13/12/2014
-        * @version         0.53
+        * @version         0.54
         * @license         GNU GPL version 3.0 (GPL v3); http://www.gnu.org/licenses/gpl.html
         * @link            https://github.com/Tinram/Database-Filler.git
     */
@@ -39,7 +39,7 @@ final class DatabaseFiller
 
     # CONFIGURATION DEFAULTS
 
-    /** @var bool $bDebug, debug output toggle */
+    /** @var boolean $bDebug, debug output toggle */
     private $bDebug = false; # true: verbose screen output and no DB insertion; false: database query insertion
 
     /** @var integer $iNumRows, number of rows to insert */
@@ -63,6 +63,9 @@ final class DatabaseFiller
     /** @var integer $iCLIRowCounter, CLI usage: rows of SQL generated before displaying progress percentage */
     private $iCLIRowCounter = 1000;
 
+    /** @var boolean $bPopulatePrimaryKey, toggle to populate primary key field, e.g. UUID used as PK */
+    private $bPopulatePrimaryKey = false;
+
     ###############################
 
     /** @var object $oConnection */
@@ -85,7 +88,7 @@ final class DatabaseFiller
 
 
     /**
-        * Constructor: set-up configuration class variables, establish database connection if no debug configuration option set.
+        * Constructor: set-up configuration class variables, establish database connection if debug = false.
         *
         * @param   array<mixed> $aConfig, configuration details
     */
@@ -130,6 +133,11 @@ final class DatabaseFiller
             $this->iCLIRowCounter = (int) $aConfig['row_counter_threshold'];
         }
 
+        if (isset($aConfig['populate_primary_key']))
+        {
+            $this->bPopulatePrimaryKey = $aConfig['populate_primary_key'];
+        }
+
         if ( ! $this->bDebug)
         {
             if ( ! isset($aConfig['host']) || ! isset($aConfig['database']) || ! isset($aConfig['username']) || ! isset($aConfig['password']))
@@ -145,7 +153,7 @@ final class DatabaseFiller
 
             $this->oConnection = new mysqli($aConfig['host'], $aConfig['username'], $aConfig['password'], $aConfig['database']);
 
-            if ( ! $this->oConnection->connect_errno)
+            if ($this->oConnection->connect_errno === 0)
             {
                 $this->oConnection->set_charset($this->sEncoding);
                 $this->bActiveConnection = true;
@@ -271,6 +279,11 @@ final class DatabaseFiller
         # get table name
         preg_match('/`([\w\-]+)`/', $aLines[0], $aRXResults);
         $sTableName = $aRXResults[1];
+
+        if ($this->bPopulatePrimaryKey === true)
+        {
+            $aLines[0] = str_replace($aRXResults[0], '', $aLines[0]);
+        }
 
         # extract field attributes
         foreach ($aLines as $sLine)
@@ -613,9 +626,16 @@ final class DatabaseFiller
             'TIME' => 'time'
         ];
 
+        if ($this->bPopulatePrimaryKey === false)
+        {
+            if (stripos($sLine, 'CREATE TABLE') !== false)
+            {
+                return null;
+            }
+        }
+
         if
         (
-            stripos($sLine, 'CREATE TABLE') !== false ||
             stripos($sLine, 'KEY') !== false ||
             stripos($sLine, 'UNIQUE') !== false ||
             stripos($sLine, 'FULLTEXT') !== false ||
