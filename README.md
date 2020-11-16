@@ -1,20 +1,27 @@
 
 # Database Filler
 
-#### Fill MySQL database tables with test data by parsing the SQL schema file.
-
+#### Populate MySQL database tables with test data by parsing the SQL schema file.
 
 ## Purpose
 
-+ Quickly populate database tables with row data for testing SQL data retrieval.
-+ Assist in testing complex database schema, before moving the database to a production environment.
-+ Check table field population with specified datatypes, potential data truncation, visual cues etc.
-+ Test database connection encoding and character encoding, and data insertion speeds.
+### Primary
 
++ Database table cloning without using any real or sensitive data:
+    + Clone of production database tables required for query analysis, yet sensitive data cannot be imported. However, you possess a structure-only schema file.
+
+### Secondary
+
++ Schema design and development:
+    + Check table field population with specified datatypes, potential data truncation, etc.
+    + Test connection encoding and character encoding, and data insertion speeds.
+
+<br>
 
 [1]: https://tinram.github.io/images/databasefiller-data.png
 ![Database-Filler database][1]
 
+<br>
 
 ## Background
 
@@ -29,7 +36,7 @@ Instead, why not parse the SQL schema?
 
 ## Database Requirements
 
-1. The script expects the database schema to exist in MySQL (`mysql -u root -p < test.sql`).
+1. The script expects the database schema to already exist in MySQL (`mysql -u root -p < test.sql`).
 2. **All table names** and **column names** in the MySQL schema **require back-ticks.**
 3. **Unique keys must be removed** from tables when using the option **'random_data' => FALSE**
 
