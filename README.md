@@ -37,8 +37,8 @@ Instead, why not parse the SQL schema?
 ## Database Requirements
 
 1. The script expects the database schema to already exist in MySQL (`mysql -u root -p < test.sql`).
-2. **All table names** and **column names** in the MySQL schema **require back-ticks.**
-3. **Unique keys must be removed** from tables when using the option **'random_data' => FALSE**
+2. **All table names** and **column names** in the MySQL schema **require back-ticks**.
+3. **Unique keys must be removed** from tables when using the configuration array option **'random_data' => false**
 
 
 ## Other
@@ -46,7 +46,17 @@ Instead, why not parse the SQL schema?
 + The majority of MySQL datatypes are supported.
 + Any foreign keys are disabled on data population.
 + Random character generation is slow in PHP, and such slowness further depends on field length, number of fields, and the number of rows being generated.
-+ Multiple INSERTs are added in a single query, which is quite fast. Number of INSERTs per second will depend on MySQL configuration settings (the defaults are not optimised), datatype / length inserted, system load, operating system, hardware etc.
++ Multiple INSERTs are added in a single query, which is quite fast. The number of INSERTs per second will depend on MySQL configuration settings (the defaults are not optimised), datatype / length inserted, system load, operating system, hardware etc.
+
+
+## Other Options
+
+Configuration boolean toggles (false by default):
+
++ *incremental_ints*
+    + make added integers incremental, enabling simplistic integer foreign keys.
++ *populate_primary_key*
+    + populate a primary key field, e.g. a UUID used as a primary key (experimental, supports only some definitions).
 
 
 ## Set-up

@@ -66,7 +66,7 @@ final class DatabaseFiller
     /** @var boolean $bPopulatePrimaryKey, toggle to populate primary key field, e.g. UUID used as PK */
     private $bPopulatePrimaryKey = false;
 
-    /** @var boolean $bIncrementalInts, toggle to make integer columns increments (simple integer FK provision) */
+    /** @var boolean $bIncrementalInts, toggle to make integers incremental (simple integer FK provision) */
     private $bIncrementalInts = false;
 
     ###############################
