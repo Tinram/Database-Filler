@@ -31,7 +31,7 @@ final class DatabaseFiller
         *
         * @author          Martin Latter
         * @copyright       Martin Latter 13/12/2014
-        * @version         0.54
+        * @version         0.55
         * @license         GNU GPL version 3.0 (GPL v3); http://www.gnu.org/licenses/gpl.html
         * @link            https://github.com/Tinram/Database-Filler.git
     */
@@ -65,6 +65,9 @@ final class DatabaseFiller
 
     /** @var boolean $bPopulatePrimaryKey, toggle to populate primary key field, e.g. UUID used as PK */
     private $bPopulatePrimaryKey = false;
+
+    /** @var boolean $bIncrementalInts, toggle to make integer columns increments (simple integer FK provision) */
+    private $bIncrementalInts = false;
 
     ###############################
 
@@ -136,6 +139,11 @@ final class DatabaseFiller
         if (isset($aConfig['populate_primary_key']))
         {
             $this->bPopulatePrimaryKey = $aConfig['populate_primary_key'];
+        }
+
+        if (isset($aConfig['incremental_ints']))
+        {
+            $this->bIncrementalInts = $aConfig['incremental_ints'];
         }
 
         if ( ! $this->bDebug)
@@ -428,7 +436,11 @@ final class DatabaseFiller
                         break;
                     }
 
-                    if ($this->bRandomData)
+                    if ($this->bIncrementalInts)
+                    {
+                        $iNum = $i + 1;
+                    }
+                    else if ($this->bRandomData)
                     {
                         if ($aRow['type'] !== 'int_64')
                         {
