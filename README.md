@@ -3,12 +3,13 @@
 
 #### Populate MySQL database tables with test data by parsing the SQL schema file.
 
+
 ## Purpose
 
 ### Primary
 
-+ Database table cloning without using any real or sensitive data:
-    + Clone of production database tables required for query analysis, yet sensitive data cannot be imported. However, you possess a structure-only schema file.
++ Database table reproduction without using any real or sensitive data:
+    + Copy of production database tables required for query analysis, yet sensitive data cannot be imported. However, you possess a structure-only SQL schema file.
 
 ### Secondary
 
@@ -23,9 +24,10 @@
 
 <br>
 
+
 ## Background
 
-Originally, I needed to populate a database containing 14 complex tables. Tools such as Spawner are useful for populating small tables, but in this case, specifying the datatypes for 300+ fields to initiate Spawner would have been insanity.
+Originally, I needed to populate a database containing 14 complex tables. Tools such as Spawner are ideal for populating small tables, but in this case, specifying the datatypes for 300+ fields to initiate Spawner would have been insanity.
 
 Instead, why not parse the SQL schema?
 
@@ -38,7 +40,7 @@ Instead, why not parse the SQL schema?
 
 1. The script expects the database schema to already exist in MySQL (`mysql -u root -p < test.sql`).
 2. **All table names** and **column names** in the MySQL schema **require back-ticks**.
-3. **Unique keys must be removed** from tables when using the configuration array option **'random_data' => false**
+3. **Unique keys must be removed** from tables when the configuration array option *random_data* is set to false.
 
 
 ## Other
