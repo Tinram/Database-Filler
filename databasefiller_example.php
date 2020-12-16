@@ -46,6 +46,9 @@ $aConfiguration =
     'low_char' => 33,
     'high_char' => 126,
 
+    // 'incremental_ints' => true,
+    // 'populate_primary_key' => true, # experimental
+
     # CLI usage: rows of SQL generated before displaying progress percentage
     'row_counter_threshold' => 1000
 ];
