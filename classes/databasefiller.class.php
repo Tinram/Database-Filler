@@ -6,41 +6,39 @@ declare(strict_types=1);
 final class DatabaseFiller
 {
     /**
-        * Fill a multi-table MySQL database with junk data by parsing the MySQL schema file.
+        * Fill a multi-table MySQL database with test data by parsing the SQL schema file.
         *
         * Origin:
-        *                  I needed to test the data population of a database with 14 complex tables.
-        *                  Tools such as Spawner are good for small tables – but too time-consuming for larger tables.
+        *                  A database with 14 complex tables required test data.
+        *                  This was too much configuration work for a tool such as Spawner.
         *                  Instead, why not parse the SQL schema?
         *
         * Purpose:
-        *                  1) Assist in the testing, editing, and data population of complex database schema.
-        *                  2) Test database connection encoding and character encoding, and data insertion speeds.
-        *                  3) Check table field population with specified datatype, data truncation, visual cues etc.
+        *                  1) Database table reproduction from a structure-only SQL schema file, without using any real or sensitive data.
+        *                  2) Database schema design and testing: data truncation, character encoding etc.
         *
         * Requirements:
         *                  1) Script expects database schema to exist in MySQL (mysql -u root -p < test.sql)
-        *                  2) ** All table names and column names in the MySQL schema require back-ticks. **
-        *                  3) Unique keys must be removed from tables when using the configuration option 'random_data' => false
+        *                  2) All table names and column names in the MySQL schema require back-ticks.
+        *                  3) Unique keys must be removed from tables when using the configuration array option 'random_data' => false
         *
         * Other:
         *                  Any foreign keys are disabled on data population.
         *                  Random character generation is slow in PHP.
         *                  Coded to PHP 7.2
-        *                  Class could be altered to parse SHOW CREATE TABLE from MySQL directly.
         *
         * @author          Martin Latter
         * @copyright       Martin Latter 13/12/2014
-        * @version         0.55
+        * @version         0.56
         * @license         GNU GPL version 3.0 (GPL v3); http://www.gnu.org/licenses/gpl.html
         * @link            https://github.com/Tinram/Database-Filler.git
     */
 
 
-    # CONFIGURATION DEFAULTS
+    ## CONFIGURATION DEFAULTS ##
 
     /** @var boolean $bDebug, debug output toggle */
-    private $bDebug = false; # true: verbose screen output and no DB insertion; false: database query insertion
+    private $bDebug = false; # true: verbose screen output and no database insertion; false: database query insertion
 
     /** @var integer $iNumRows, number of rows to insert */
     private $iNumRows = 1;
@@ -51,19 +49,19 @@ final class DatabaseFiller
     /** @var string $sEncoding, database connection encoding */
     private $sEncoding = 'utf8';
 
-    /** @var integer $iLowChar, random character range - low */
+    /** @var integer $iLowChar, random character range: low */
     private $iLowChar = 33;
 
-    /** @var integer $iHighChar, random character range - high */
+    /** @var integer $iHighChar, random character range: high */
     private $iHighChar = 126;
 
     /** @var boolean $bRandomData, random data generator toggle */
-    private $bRandomData = true; # false = a much faster fixed character fill (unsuitable with unique indexes, and SET unique_checks = 0 is not sufficient)
+    private $bRandomData = true; # false = much faster fixed character fill (unsuitable with unique indexes, and SET unique_checks = 0 is not sufficient)
 
     /** @var integer $iCLIRowCounter, CLI usage: rows of SQL generated before displaying progress percentage */
     private $iCLIRowCounter = 1000;
 
-    /** @var boolean $bPopulatePrimaryKey, toggle to populate primary key field, e.g. UUID used as PK */
+    /** @var boolean $bPopulatePrimaryKey, toggle to populate primary key field (experimental), e.g. UUID used as PK */
     private $bPopulatePrimaryKey = false;
 
     /** @var boolean $bIncrementalInts, toggle to make integers incremental (simple integer FK provision) */
