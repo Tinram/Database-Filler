@@ -5,7 +5,7 @@
     *
     * @author       Martin Latter
     * @copyright    Martin Latter 09/12/2020
-    * @version      0.03
+    * @version      0.04
     * @license      GNU GPL version 3.0 (GPL v3); http://www.gnu.org/licenses/gpl.html
     * @link         https://github.com/Tinram/Database-Filler.git
 */
@@ -129,7 +129,7 @@ CREATE TABLE `player`
     `updated_by`      CHAR(16) NOT NULL DEFAULT '',
 
     KEY `idx_last_name` (`last_name`),
-    KEY `idx_name` (first_name, `last_name`),
+    KEY `idx_name` (`first_name`, `last_name`),
     KEY `idx_active` (`active`),
     KEY `idx_deleted` (`deleted`),
 
