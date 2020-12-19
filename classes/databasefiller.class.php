@@ -29,7 +29,7 @@ final class DatabaseFiller
         *
         * @author          Martin Latter
         * @copyright       Martin Latter 13/12/2014
-        * @version         0.56
+        * @version         0.57
         * @license         GNU GPL version 3.0 (GPL v3); http://www.gnu.org/licenses/gpl.html
         * @link            https://github.com/Tinram/Database-Filler.git
     */
@@ -419,7 +419,7 @@ final class DatabaseFiller
                             }
                             else
                             {
-                                $iMin = -128;
+                                $iMin = -127;
                                 $iMax = 127;
                             }
 
@@ -436,7 +436,14 @@ final class DatabaseFiller
 
                     if ($this->bIncrementalInts)
                     {
-                        $iNum = $i + 1;
+                        if ($aRow['type'] === 'int_32' || $aRow['type'] === 'int_64')
+                        {
+                            $iNum = $i + 1;
+                        }
+                        else
+                        {
+                            $iNum = $iMax;
+                        }
                     }
                     else if ($this->bRandomData)
                     {
