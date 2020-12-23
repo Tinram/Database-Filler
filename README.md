@@ -51,9 +51,9 @@ Instead, why not parse the SQL schema?
 + Multiple INSERTs are added in a single query, which is quite fast. The number of INSERTs per second will depend on MySQL configuration settings (the defaults are not optimised), datatype / length inserted, system load, operating system, hardware etc.
 
 
-## Other Options
+## Further Options
 
-Configuration boolean toggles (false by default):
+Configuration boolean toggles (`false` by default):
 
 + *incremental_ints*
     + make added integers incremental, enabling simplistic integer foreign keys.
@@ -81,6 +81,14 @@ Then execute this file with PHP on the command-line:
 *or* run the file through a web server e.g.
 
         http://localhost/Database-Filler/databasefiller_example.php
+
+
+## Other Projects
+
++ [SQLParser](https://github.com/iamcal/SQLParser)
++ [schema-parser-mysql](https://github.com/ekhaled/schema-parser-mysql/)
+
+*SQLParser* would have been used in this project had it been available in 2014.
 
 
 ## License
