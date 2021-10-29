@@ -6,7 +6,7 @@
     *
     * @author       Martin Latter
     * @copyright    Martin Latter 13/12/2014
-    * @version      0.05
+    * @version      0.06
     * @license      GNU GPL version 3.0 (GPL v3); http://www.gnu.org/licenses/gpl.html
     * @link         https://github.com/Tinram/Database-Filler.git
 */
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `test_datatypes`
     `val_float`            FLOAT(20, 2) NOT NULL DEFAULT 0.00,
     `val_double`           DOUBLE(40, 4) NOT NULL DEFAULT 0.0000 COMMENT 'normal schema comment',
 
-    `enumerator`           ENUM('choice1', 'choice2', 'choice3', 'choice4'),
+    `enumerator`           ENUM('a', 'b', 'c', 'd'),
 
     `flag`                 TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
 
