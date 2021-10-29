@@ -29,7 +29,7 @@ final class DatabaseFiller
         *
         * @author          Martin Latter
         * @copyright       Martin Latter 13/12/2014
-        * @version         0.57
+        * @version         0.58
         * @license         GNU GPL version 3.0 (GPL v3); http://www.gnu.org/licenses/gpl.html
         * @link            https://github.com/Tinram/Database-Filler.git
     */
@@ -529,7 +529,7 @@ final class DatabaseFiller
                 }
                 else if ($aRow['type'] === 'enumerate')
                 {
-                    $aTemp[] = '"' . $aRow['enumfields'][array_rand($aRow['enumfields'])] . '"';
+                    $aTemp[] = '"' . $aRow['enumfields'][array_rand($aRow['enumfields'], 1)] . '"';
                 }
             }
 
@@ -550,7 +550,7 @@ final class DatabaseFiller
         ##
 
         $fD2 = microtime(true);
-        $this->aMessages[] = ((PHP_SAPI === 'cli') ? $this->sLineBreak : '') . __METHOD__ . '() iteration ' . $iCount . ' :: ' . sprintf('%01.6f sec', $fD2 - $fD1);
+        $this->aMessages[] = ((PHP_SAPI === 'cli') ? $this->sLineBreak : '') . __METHOD__ . '() table ' . $iCount . ' :: ' . sprintf('%01.6f sec', $fD2 - $fD1);
 
         if ($this->bDebug)
         {
@@ -696,7 +696,8 @@ final class DatabaseFiller
                     $iEnd = strpos($sLine, ')');
 
                     $sEnumParams = substr($sLine,  $iStart, ($iEnd + 1) - $iStart);
-                    $sEnumParams = str_replace( ['\'', '"', '(', ')', ' '], '', $sEnumParams);
+                    $sEnumParams = str_replace( ['\'', '"', '(', ')'], '', $sEnumParams);
+                    $sEnumParams = str_replace(', ', ',', $sEnumParams);
 
                     $aOut['enumfields'] = explode(',', $sEnumParams);
                 }
