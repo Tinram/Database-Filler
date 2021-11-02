@@ -5,13 +5,13 @@
     *
     * @author       Martin Latter
     * @copyright    Martin Latter 09/12/2020
-    * @version      0.04
+    * @version      0.05
     * @license      GNU GPL version 3.0 (GPL v3); http://www.gnu.org/licenses/gpl.html
     * @link         https://github.com/Tinram/Database-Filler.git
 */
 
 
-CREATE DATABASE basketball CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE DATABASE basketball CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 USE basketball;
