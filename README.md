@@ -6,15 +6,9 @@
 
 ## Purpose
 
-### Primary
-
-+ Database table reproduction without using any real or sensitive data:
-    + Copy of production database tables required for query analysis, yet sensitive data cannot be imported. However, you possess a structure-only SQL schema file.
-
-### Secondary
-
++ Database table population without using any real or sensitive data:
 + Schema design and development:
-    + Check table field population with specified datatypes, potential data truncation, etc.
+    + Check table field population with specified datatypes, potential data truncation etc.
     + Test connection encoding and character encoding, and data insertion speeds.
 
 <br>
@@ -87,6 +81,7 @@ Then execute this file with PHP on the command-line:
 
 + [SQLParser](https://github.com/iamcal/SQLParser)
 + [schema-parser-mysql](https://github.com/ekhaled/schema-parser-mysql/)
++ [MySQL_Filler](https://github.com/Tinram/MySQL_Filler)
 
 *SQLParser* would have been used in this project had it been available in 2014.
 
