@@ -29,7 +29,7 @@ final class DatabaseFiller
         *
         * @author          Martin Latter
         * @copyright       Martin Latter 13/12/2014
-        * @version         0.58
+        * @version         0.59
         * @license         GNU GPL version 3.0 (GPL v3); http://www.gnu.org/licenses/gpl.html
         * @link            https://github.com/Tinram/Database-Filler.git
     */
@@ -572,13 +572,12 @@ final class DatabaseFiller
         # send SQL to database
         if ( ! $this->bDebug)
         {
-            $this->oConnection->query('SET foreign_key_checks = 0');
+            $this->oConnection->query('SET SESSION foreign_key_checks = OFF');
+            $this->oConnection->query('SET SESSION unique_checks = OFF');
 
             if ($this->sUsername === 'root' && $this->iNumRows > 1500) # adjust value as necessary, 1500 was originally for Win XAMPP
             {
-                # the following variable can be set when running as root / super (affecting all connections)
-                # other useful variables for inserts need to be directly edited in my.cnf / my.ini
-                $this->oConnection->query('SET GLOBAL max_allowed_packet = 268435456');
+                $this->oConnection->query('SET SESSION max_allowed_packet = 268435456');
             }
 
             $fT1 = microtime(true);
