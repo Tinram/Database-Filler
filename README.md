@@ -1,4 +1,16 @@
 
+##### This repo is shoved into retirement. The schema file parsing and single-threaded nature of PHP, along with high memory usage makes this package obsolete.
+
+##### More efficient alternatives are [MySQL-Filler](https://github.com/Tinram/MySQL-Filler) and [mysql_random_data_load](https://github.com/Percona-Lab/mysql_random_data_load).
+
+
+<br>
+
+<hr>
+
+<br>
+
+
 # Database Filler
 
 #### Populate MySQL database tables with test data by parsing the SQL schema file.
